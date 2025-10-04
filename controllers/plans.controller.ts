@@ -65,7 +65,7 @@ export const actualizarPlan = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     //Opcion: aceptar solo campos permitidos para evitar update inesperado
-    const allowed = ["type", "name", "benefits", "price", "img"];
+    const allowed = ["type", "name", "desc", "benefits", "price", "img"];
     const updates: any = {};
 
     for (const key of Object.keys(req.body)) {
