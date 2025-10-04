@@ -37,9 +37,9 @@ export const obtenerPlanesPorTipo = async (req: Request, res: Response) => {
 // crear un nuevo plan
 export const crearPlan = async (req: Request, res: Response) => {
   try {
-    const { type, name, benefits, price, img } = req.body;
+    const { type, name, desc, benefits, price, img } = req.body;
 
-    const nuevoPlan = new Plan({ type, name, benefits, price, img });
+    const nuevoPlan = new Plan({ type, name, desc, benefits, price, img });
     await nuevoPlan.save();
 
     res.status(201).json(nuevoPlan);
@@ -84,7 +84,9 @@ export const actualizarPlan = async (req: Request, res: Response) => {
     return res.json(planActualizado);
   } catch (error: any) {
     if (error.name === "ValidationError") {
-      const mensajes = Object.values(error.errors).map((err: any) => err.message);
+      const mensajes = Object.values(error.errors).map(
+        (err: any) => err.message
+      );
 
       return res.status(400).json({
         error: "Validacion fallida",
