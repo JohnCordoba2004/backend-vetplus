@@ -13,6 +13,12 @@ const PlanSchema = new mongoose_1.Schema({
         trim: true,
         minlenght: [3, "El nombre debe tener al menos 3 caracteres"],
     },
+    desc: {
+        type: String,
+        required: [true, "La descripcion es obligatoria"],
+        trim: true,
+        minlength: [20, "la descripcion debe tener al menos 20 caracteres"],
+    },
     benefits: {
         type: [String],
         required: [true, "Debe incluir al menos un beneficio"],
