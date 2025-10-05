@@ -3,6 +3,8 @@ import { Schema, model, Document } from "mongoose";
 export interface IPlan extends Document {
   type: "dog" | "cat";
   desc: string;
+  descName: string;
+  descPrice: string;
   name: string;
   benefits: string[];
   price: number;
@@ -22,6 +24,18 @@ const PlanSchema = new Schema<IPlan>({
     minlenght: [3, "El nombre debe tener al menos 3 caracteres"],
   },
   desc: {
+    type: String,
+    required: [true, "La descripcion es obligatoria"],
+    trim: true,
+    minlength: [20, "la descripcion debe tener al menos 20 caracteres"],
+  },
+  descName: {
+    type: String,
+    required: [true, "La descripcion es obligatoria"],
+    trim: true,
+    minlength: [20, "la descripcion debe tener al menos 20 caracteres"],
+  },
+  descPrice: {
     type: String,
     required: [true, "La descripcion es obligatoria"],
     trim: true,

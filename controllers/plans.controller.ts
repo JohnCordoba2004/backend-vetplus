@@ -37,7 +37,8 @@ export const obtenerPlanesPorTipo = async (req: Request, res: Response) => {
 // crear un nuevo plan
 export const crearPlan = async (req: Request, res: Response) => {
   try {
-    const { type, name, desc, benefits, price, img } = req.body;
+    const { type, name, desc, descName, descPrice, benefits, price, img } =
+      req.body;
 
     const nuevoPlan = new Plan({ type, name, desc, benefits, price, img });
     await nuevoPlan.save();
@@ -65,7 +66,16 @@ export const actualizarPlan = async (req: Request, res: Response) => {
     const { id } = req.params;
 
     //Opcion: aceptar solo campos permitidos para evitar update inesperado
-    const allowed = ["type", "name", "desc", "benefits", "price", "img"];
+    const allowed = [
+      "type",
+      "name",
+      "desc",
+      "descName",
+      "descPrice",
+      "benefits",
+      "price",
+      "img",
+    ];
     const updates: any = {};
 
     for (const key of Object.keys(req.body)) {
