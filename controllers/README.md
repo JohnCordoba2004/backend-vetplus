@@ -1,0 +1,315 @@
+## README — Controllers (backend-vetplus)
+
+Este documento explica, **de forma breve pero clara**, el código de los controladores TypeScript dentro de `controllers/`.
+
+### ¿Qué hace un “controller” aquí?
+
+- **Recibe** una petición HTTP (Express: `Request`).
+- **Usa** un modelo de Mongoose (`Plan`, `Clinica`) para consultar/escribir MongoDB.
+- **Responde** con JSON y el **status code** correcto (Express: `Response`).
+- **Maneja errores** con `try/catch` y devuelve `400/404/500` según el caso.
+
+---
+
+## `clinica.controller.ts`
+
+### Resumen rápido
+
+- **Modelo usado**: `Clinica` (`../models/Clinica`).
+- **Operaciones**:
+  - **GET**: listar todas las clínicas.
+  - **GET**: obtener una clínica por `id`.
+  - **POST**: crear una clínica (o creación masiva si `req.body` es un array).
+  - **PUT/PATCH**: actualizar una clínica por `id` (solo campos permitidos).
+  - **DELETE**: eliminar una clínica por `id`.
+
+### Explicación línea por línea
+
+- **L1**: Importa los tipos `Request` y `Response` de Express (tipado de `req`/`res`).
+- **L2**: Importa el modelo `Clinica` (Mongoose) para operar con la colección.
+- **L3**: Línea en blanco (separación visual).
+- **L4**: Comentario: intención de la función siguiente (listar clínicas).
+- **L5**: Declara y exporta `obtenerClinica` como función async (handler de ruta).
+- **L6**: Abre un `try` para capturar errores de BD/servidor.
+- **L7**: Consulta MongoDB: `Clinica.find()` trae **todas** las clínicas.
+- **L8**: Responde con JSON: devuelve el array `clinicas`.
+- **L9**: Entra al `catch` si algo falla en el `try`.
+- **L10**: Responde `500` (error interno) con mensaje.
+- **L11**: Cierra el `catch`.
+- **L12**: Cierra la función `obtenerClinica`.
+- **L13**: Línea en blanco.
+- **L14**: Comentario: intención de la función siguiente (buscar por id).
+- **L15**: Declara y exporta `obtenerClinicasPorId` (handler async).
+- **L16**: Abre `try`.
+- **L17**: Toma `id` desde `req.params` (parte de la URL).
+- **L18**: Consulta por ID: `Clinica.findById(id)`.
+- **L19**: Si no existe, responde `404`. (Nota: el mensaje dice “Plan no encontrado”, debería decir “Clínica no encontrada”).
+- **L20**: Devuelve la clínica encontrada en JSON.
+- **L21**: Abre `catch`.
+- **L22**: Responde `500` si hubo error en la búsqueda.
+- **L23**: Cierra `catch`.
+- **L24**: Cierra la función.
+- **L25**: Línea en blanco.
+- **L26**: Comentario: intención de la función siguiente (crear).
+- **L27**: Declara y exporta `crearClinica` (handler async).
+- **L28**: Abre `try`.
+- **L29**: Comentario: explica que se soporta carga masiva (array) y única (objeto).
+- **L30**: Verifica si `req.body` es un arreglo (`Array.isArray`).
+- **L31**: Inserción masiva: `Clinica.insertMany(req.body, { ordered: true })`.
+- **L32**: Devuelve `201` con las clínicas creadas masivamente.
+- **L33**: Cierra el `if` (caso carga masiva).
+- **L34**: Línea en blanco.
+- **L35**: Comentario: caso normal (un solo objeto).
+- **L36**: Crea un documento Mongoose: `new Clinica(req.body)`.
+- **L37**: Guarda en BD con `save()`.
+- **L38**: Responde `201` con la clínica creada.
+- **L39**: Línea en blanco.
+- **L40**: `catch` tipado como `any` para inspeccionar propiedades (`name`, etc.).
+- **L41**: Maneja errores de validación o de inserción masiva (`MongooseBulkWriteError`).
+- **L42**: Comentario: se extraen mensajes de error (uno o muchos).
+- **L43**: Si existen `error.errors` (validaciones por campo), se usa; si no, se usa `error.message`.
+- **L44**: Convierte los errores por campo a una lista de mensajes.
+- **L45**: Alternativa: si no hay `errors`, usa el mensaje general como array.
+- **L46**: Línea en blanco.
+- **L47**: Devuelve `400` indicando que el input no cumple validaciones.
+- **L48**: Campo `error` con texto general.
+- **L49**: Campo `mensajes` con lista de detalles.
+- **L50**: Cierra el objeto JSON.
+- **L51**: Cierra el `if` de validación.
+- **L52**: Línea en blanco.
+- **L53**: Para cualquier otro error, responde `500` + `detalle` con `error.message`.
+- **L54**: Cierra el `catch`.
+- **L55**: Cierra la función `crearClinica`.
+- **L56**: Línea en blanco.
+- **L57**: Comentario: intención de la función siguiente (actualizar por id).
+- **L58**: Declara y exporta `actualizarClinica`.
+- **L59**: Abre `try`.
+- **L60**: Lee `id` desde `req.params`.
+- **L61**: Línea en blanco.
+- **L62**: Comentario: se filtran campos permitidos para evitar actualizaciones inesperadas.
+- **L63**: Declara array `allowed` con nombres de campos permitidos.
+- **L64**: Campo permitido: `name`.
+- **L65**: Campo permitido: `direction`.
+- **L66**: Campo permitido: `phone`.
+- **L67**: Campo permitido: `celular`.
+- **L68**: Campo permitido: `webs`.
+- **L69**: Campo permitido: `city`.
+- **L70**: Cierra el array.
+- **L71**: Crea `updates` (objeto que contendrá solo lo permitido).
+- **L72**: Línea en blanco.
+- **L73**: Recorre todas las keys recibidas en `req.body`.
+- **L74**: Si la key está en `allowed`, la copia a `updates`.
+- **L75**: Cierra el `for`.
+- **L76**: Línea en blanco.
+- **L77**: Actualiza por ID con `findByIdAndUpdate(id, updates, options)`.
+- **L78**: `new: true` devuelve el documento ya actualizado.
+- **L79**: `runValidators: true` fuerza validaciones del schema en el update.
+- **L80**: Cierra opciones.
+- **L81**: Línea en blanco.
+- **L82**: Si no se encontró el documento para actualizar...
+- **L83**: Devuelve `404` indicando que no existe la clínica.
+- **L84**: Cierra el `if`.
+- **L85**: Línea en blanco.
+- **L86**: Devuelve JSON con la clínica actualizada.
+- **L87**: Abre `catch`.
+- **L88**: Caso de error de validación.
+- **L89**: Extrae mensajes desde `error.errors`.
+- **L90**: Mapea cada error a su `message`.
+- **L91**: Cierra el mapeo.
+- **L92**: Línea en blanco.
+- **L93**: Devuelve `400` + mensajes de validación.
+- **L94**: Texto general de error.
+- **L95**: Lista de mensajes.
+- **L96**: Cierra el JSON.
+- **L97**: Cierra el `if` de validación.
+- **L98**: Línea en blanco.
+- **L99**: Log en consola para diagnóstico (servidor).
+- **L100**: Responde `500` genérico.
+- **L101**: Cierra `catch`.
+- **L102**: Cierra la función.
+- **L103**: Línea en blanco.
+- **L104**: Comentario: intención de la función siguiente (eliminar).
+- **L105**: Declara y exporta `eliminarClinica`.
+- **L106**: Abre `try`.
+- **L107**: Lee `id` desde `req.params`.
+- **L108**: Línea en blanco.
+- **L109**: Borra por ID con `Clinica.findByIdAndDelete(id)`.
+- **L110**: Línea en blanco.
+- **L111**: Si no existe, responde `400` (aquí también podría ser `404`).
+- **L112**: Línea en blanco.
+- **L113**: Responde `200` con un mensaje de confirmación.
+- **L114**: Texto del mensaje.
+- **L115**: Incluye la clínica eliminada en la respuesta.
+- **L116**: Cierra el JSON.
+- **L117**: Abre `catch`.
+- **L118**: Log del error en consola.
+- **L119**: Responde `500` si hubo error al eliminar.
+- **L120**: Cierra `catch`.
+- **L121**: Cierra la función.
+- **L122**: (Fin de archivo).
+
+---
+
+## `plans.controller.ts`
+
+### Resumen rápido
+
+- **Modelo usado**: `Plan` (`../models/Plan`).
+- **Operaciones**:
+  - **GET**: listar todos los planes.
+  - **GET**: obtener plan por `id`.
+  - **GET**: obtener planes por `tipo` (filtra por `type`).
+  - **POST**: crear plan.
+  - **PUT/PATCH**: actualizar plan por `id` (solo campos permitidos).
+  - **DELETE**: eliminar plan por `id`.
+
+### Explicación línea por línea
+
+- **L1**: Importa los tipos `Request` y `Response` para tipar handlers de Express.
+- **L2**: Importa el modelo `Plan` (Mongoose).
+- **L3**: Línea en blanco.
+- **L4**: Comentario: intención (listar planes).
+- **L5**: Declara y exporta `obtenerPlanes` (async).
+- **L6**: Abre `try`.
+- **L7**: `Plan.find()` trae todos los planes desde MongoDB.
+- **L8**: Devuelve el array `planes` en JSON.
+- **L9**: Abre `catch` si falla.
+- **L10**: Responde `500` con mensaje.
+- **L11**: Cierra `catch`.
+- **L12**: Cierra la función.
+- **L13**: Línea en blanco.
+- **L14**: Comentario: intención (buscar por ID).
+- **L15**: Declara y exporta `obtenerPlanesPorID`.
+- **L16**: Abre `try`.
+- **L17**: Lee `id` desde `req.params`.
+- **L18**: Busca por id con `Plan.findById(id)`.
+- **L19**: Si no existe, responde `404`.
+- **L20**: Responde con el plan encontrado.
+- **L21**: Abre `catch`.
+- **L22**: Responde `500` ante error.
+- **L23**: Cierra `catch`.
+- **L24**: Cierra la función.
+- **L25**: Línea en blanco.
+- **L26**: Comentario: intención (buscar por tipo).
+- **L27**: Declara y exporta `obtenerPlanesPorTipo`.
+- **L28**: Abre `try`.
+- **L29**: Lee `tipo` desde `req.params` (ej: `dog` / `cat`).
+- **L30**: Filtra por `type`: `Plan.find({ type: tipo })`.
+- **L31**: Devuelve el array filtrado.
+- **L32**: Abre `catch`.
+- **L33**: Responde `500` ante error.
+- **L34**: Cierra `catch`.
+- **L35**: Cierra la función.
+- **L36**: Línea en blanco.
+- **L37**: Comentario: intención (crear plan).
+- **L38**: Declara y exporta `crearPlan`.
+- **L39**: Abre `try`.
+- **L40**: Desestructura campos desde `req.body`.
+- **L41**: Continúa la desestructuración (por salto de línea).
+- **L42**: Línea en blanco.
+- **L43**: Crea un documento `Plan` con algunos campos (nota: `descName` y `descPrice` se desestructuran pero no se guardan aquí).
+- **L44**: Guarda en BD con `save()`.
+- **L45**: Línea en blanco.
+- **L46**: Responde `201` con el plan creado.
+- **L47**: Abre `catch` (tipado `any`).
+- **L48**: Si es un `ValidationError` de Mongoose...
+- **L49**: Extrae lista de mensajes desde `error.errors`.
+- **L50**: Convierte cada error en `err.message`.
+- **L51**: Cierra el mapeo.
+- **L52**: Línea en blanco.
+- **L53**: Devuelve `400` con error general + mensajes.
+- **L54**: Texto general.
+- **L55**: Lista de mensajes.
+- **L56**: Cierra JSON.
+- **L57**: Cierra el `if` de validación.
+- **L58**: Línea en blanco.
+- **L59**: Para otros errores, responde `500`.
+- **L60**: Cierra `catch`.
+- **L61**: Cierra la función.
+- **L62**: Línea en blanco.
+- **L63**: Comentario: intención (actualizar por id).
+- **L64**: Declara y exporta `actualizarPlan`.
+- **L65**: Abre `try`.
+- **L66**: Lee `id` desde `req.params`.
+- **L67**: Línea en blanco.
+- **L68**: Comentario: filtra campos permitidos.
+- **L69**: Array `allowed` con campos permitidos para actualizar.
+- **L70**: Permite `type`.
+- **L71**: Permite `name`.
+- **L72**: Permite `desc`.
+- **L73**: Permite `descName`.
+- **L74**: Permite `descPrice`.
+- **L75**: Permite `benefits`.
+- **L76**: Permite `price`.
+- **L77**: Permite `img`.
+- **L78**: Cierra el array.
+- **L79**: Crea `updates` donde se copiarán solo keys permitidas.
+- **L80**: Línea en blanco.
+- **L81**: Recorre las keys del `req.body`.
+- **L82**: Si la key está permitida, la copia a `updates`.
+- **L83**: Cierra el `for`.
+- **L84**: Línea en blanco.
+- **L85**: Ejecuta update: `Plan.findByIdAndUpdate(id, updates, options)`.
+- **L86**: `new: true` devuelve el documento actualizado.
+- **L87**: `runValidators: true` valida también en updates.
+- **L88**: Cierra opciones.
+- **L89**: Línea en blanco.
+- **L90**: Si no existe el plan...
+- **L91**: Responde `404`.
+- **L92**: Cierra el `if`.
+- **L93**: Línea en blanco.
+- **L94**: Devuelve JSON con el plan actualizado.
+- **L95**: Abre `catch`.
+- **L96**: Si es `ValidationError`...
+- **L97**: Extrae mensajes desde `error.errors`.
+- **L98**: Mapea a `err.message`.
+- **L99**: Cierra el mapeo.
+- **L100**: Línea en blanco.
+- **L101**: Responde `400` con mensajes.
+- **L102**: Texto general.
+- **L103**: Lista de mensajes.
+- **L104**: Cierra JSON.
+- **L105**: Cierra el `if`.
+- **L106**: Línea en blanco.
+- **L107**: Log del error (diagnóstico).
+- **L108**: Responde `500` genérico.
+- **L109**: Cierra `catch`.
+- **L110**: Cierra la función.
+- **L111**: Línea en blanco.
+- **L112**: Comentario: intención (eliminar por id).
+- **L113**: Declara y exporta `eliminarPlan`.
+- **L114**: Abre `try`.
+- **L115**: Lee `id` desde `req.params`.
+- **L116**: Línea en blanco.
+- **L117**: Elimina por ID: `Plan.findByIdAndDelete(id)`.
+- **L118**: Línea en blanco.
+- **L119**: Si no existe, responde `400` (podría ser `404` según criterio).
+- **L120**: Línea en blanco.
+- **L121**: Responde `200` con mensaje y el plan eliminado.
+- **L122**: Mensaje.
+- **L123**: Devuelve el `plan` eliminado.
+- **L124**: Cierra JSON.
+- **L125**: Abre `catch`.
+- **L126**: Log del error.
+- **L127**: Responde `500` ante fallo.
+- **L128**: Cierra `catch`.
+- **L129**: Cierra la función.
+- **L130**: (Fin de archivo).
+
+---
+
+### Recursos para seguir aprendiendo
+
+- **Express (Request/Response, routing, errores)**
+  - [Routing](https://expressjs.com/en/guide/routing.html)
+  - [Error handling](https://expressjs.com/en/guide/error-handling.html)
+- **TypeScript (tipado en Express)**
+  - [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html)
+- **Mongoose (CRUD y validaciones)**
+  - [Queries](https://mongoosejs.com/docs/queries.html)
+  - [Validation](https://mongoosejs.com/docs/validation.html)
+  - [insertMany](https://mongoosejs.com/docs/api/model.html#Model.insertMany())
+- **Diseño de APIs**
+  - [HTTP status codes (MDN)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
+  - [REST (MDN)](https://developer.mozilla.org/en-US/docs/Glossary/REST)
+

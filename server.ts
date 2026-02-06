@@ -7,6 +7,9 @@ import dotenv from "dotenv";
 import { connectDB } from "./database";
 
 import plansRoutes from "./routes/plans.routes";
+import clinicaRoutes from "./routes/clinica.routes";
+import profesionalesRoutes from "./routes/profesionales.routes";
+import otrosRoutes from "./routes/otros.routes";
 
 dotenv.config();
 console.log("Variable de entoron cargadas...");
@@ -24,6 +27,9 @@ connectDB();
 
 //Routes
 app.use("/api/planes", plansRoutes);
+app.use("/api/clinicas", clinicaRoutes);
+app.use("/api/profesionales", profesionalesRoutes)
+app.use("/api/otros", otrosRoutes)
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 const PORT = process.env.PORT || 3000;
