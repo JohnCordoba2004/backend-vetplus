@@ -7,8 +7,11 @@ const storage = multer.diskStorage({
     cb(null, "uploads/"); //carpeta en la raiz del proyecto
   },
   filename: (req, file, cb) => {
+    // 1. extraemos la extension (ej: .png)
     const ext = path.extname(file.originalname);
-    cb(null, `${Date.now()}-${file.fieldname}${ext}`);
+    // 2. Extraemos el nombre base sin la extension
+    const nameOnly = path.basename(file.originalname, ext)
+    cb(null, `${Date.now()}-${nameOnly}${ext}`);
   },
 });
 
