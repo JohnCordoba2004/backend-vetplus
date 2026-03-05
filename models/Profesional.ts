@@ -25,31 +25,67 @@ const ProfesionalesSchema = new Schema<IPlan>({
   },
   direction: {
     type: [String],
+    // El campo "direction" será un arreglo de cadenas de texto.
+
     default: [],
+    // Si no se envía nada, por defecto será un arreglo vacío.
+
     validate: {
       validator: function (arr: string[]): boolean {
+        // 1. Si el arreglo no existe (!arr) o está vacío (arr.length === 0), lo aceptamos como válido.
         if (!arr || arr.length === 0) return true;
+
+        // 2. Creamos un nuevo arreglo "cleanArr":
+        //    - Usamos map() para recorrer cada dirección y aplicar trim(), eliminando espacios en blanco al inicio y al final.
+        //    - Luego usamos filter() para descartar las cadenas que quedaron vacías después del trim.
         const cleanArr = arr.map(dir => dir.trim()).filter(dir => dir !== "");
+
+        // 3. Si después de limpiar todas las direcciones el arreglo quedó vacío, lo aceptamos como válido.
+        //    (Esto significa que se permite guardar el campo vacío).
         if (cleanArr.length === 0) return true;
+
+        // 4. Finalmente verificamos que cada elemento del arreglo limpio tenga al menos un carácter.
+        //    Si todos cumplen, retorna true (válido); si alguno no cumple, retorna false (inválido).
         return cleanArr.every(dir => dir.length > 0);
       },
+
       message: "La dirección no puede estar compuesta solo por espacios."
+      // Mensaje de error que se mostrará si la validación falla.
     }
   },
+
   webs: {
     type: [String],
+    // El campo "webs" será un arreglo de cadenas de texto (URLs).
+
     default: [],
+    // Si no se envía nada, por defecto será un arreglo vacío.
+
     validate: {
       validator: function (arr: string[]) {
+        // 1. Si el arreglo no existe (!arr) o está vacío (arr.length === 0), lo aceptamos como válido.
         if (!arr || arr.length === 0) return true;
+
+        // 2. Creamos un nuevo arreglo "cleanArr":
+        //    - Usamos filter() para descartar las cadenas que están vacías o compuestas solo por espacios.
         const cleanArr = arr.filter(url => url.trim() !== "");
+
+        // 3. Si después de limpiar todas las URLs el arreglo quedó vacío, lo aceptamos como válido.
+        //    (Esto significa que se permite guardar el campo vacío).
         if (cleanArr.length === 0) return true;
-        // Agregué validación de formato básico para URLs que no traen http
+
+        // 4. Validamos cada URL del arreglo limpio:
+        //    - Debe cumplir con un formato básico de URL que empiece por http:// o https://
+        //    - O bien contener "www." como parte de la dirección.
+        //    Si todas cumplen, retorna true; si alguna falla, retorna false.
         return cleanArr.every(url => /^(http|https):\/\/[^ "]+$/.test(url) || url.includes('www.'));
       },
+
       message: "Debe ser una URL válida"
-    },
+      // Mensaje de error que se mostrará si la validación falla.
+    }
   },
+
 });
 
 export default model<IPlan>("Profesional", ProfesionalesSchema);
