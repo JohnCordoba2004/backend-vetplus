@@ -12,7 +12,7 @@ import profesionalesRoutes from "./routes/profesionales.routes";
 import otrosRoutes from "./routes/otros.routes";
 
 dotenv.config();
-console.log("Variable de entoron cargadas...");
+console.log("Variable de entorno cargadas...");
 
 const app = express();
 console.log("express cargado...");
