@@ -1,3 +1,9 @@
+# Ignorar variables de entorno
+.env
+
+#Ignorar la carpeta de subidas locales
+/uploads
+
 node_modules
 dist
-.env
+
