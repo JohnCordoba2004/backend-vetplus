@@ -4,6 +4,12 @@
 #Ignorar la carpeta de subidas locales
 /uploads
 
+#node_modules
 node_modules
+
 dist
+
+#ignorar archivos del log
+*.log
+
 
