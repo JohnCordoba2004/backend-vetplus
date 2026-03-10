@@ -46,7 +46,7 @@ exports.obtenerPlanesPorTipo = obtenerPlanesPorTipo;
 const crearPlan = async (req, res) => {
     try {
         const { type, name, desc, descName, descPrice, benefits, price, img } = req.body;
-        const nuevoPlan = new Plan_1.default({ type, name, desc, benefits, price, img });
+        const nuevoPlan = new Plan_1.default({ type, name, desc, descName, descPrice, benefits, price, img });
         await nuevoPlan.save();
         res.status(201).json(nuevoPlan);
     }

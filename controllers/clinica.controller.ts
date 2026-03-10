@@ -16,71 +16,53 @@ export const obtenerClinicasPorId = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const clinica = await Clinica.findById(id);
-    if (!clinica) return res.status(404).json({ error: "Plan no encontrado" });
-    res.json(clinica); //✅Devulve el plan
+    if (!clinica) return res.status(404).json({ error: "Clínica no encontrada" });
+    res.json(clinica);
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener la clinica por ID" });
+    res.status(500).json({ error: "Error al obtener la clínica por ID" });
   }
 };
 
-// crear nueva clinica
+// Crear nueva clinica
 export const crearClinica = async (req: Request, res: Response) => {
   try {
-    // 1. Verificamos si lo que llega es un Arreglo (Carga masiva)
     if (Array.isArray(req.body)) {
       const nuevasClinicas = await Clinica.insertMany(req.body, { ordered: true });
       return res.status(201).json(nuevasClinicas);
     }
 
-    // 2. Si no es un arreglo, es un objeto único (Lógica original)
     const nuevaClinica = new Clinica(req.body);
     await nuevaClinica.save();
     res.status(201).json(nuevaClinica);
 
   } catch (error: any) {
     if (error.name === "ValidationError" || error.name === "MongooseBulkWriteError") {
-      // Extraemos los mensajes de error ya sea de uno o de muchos
       const mensajes = error.errors
         ? Object.values(error.errors).map((err: any) => err.message)
         : [error.message];
 
       return res.status(400).json({
-        error: "Validacion fallida",
+        error: "Validación fallida",
         mensajes,
       });
     }
-
     res.status(500).json({ error: "Error interno del servidor", detalle: error.message });
   }
 };
 
-// Actualizar plan por id
+// ACTUALIZAR (Corregido: Flexible y sin bloqueos)
 export const actualizarClinica = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    //Opcion: aceptar solo campos permitidos para evitar update inesperado
-    const allowed = [
-      "name",
-      "direction",
-      "phone",
-      "celular",
-      "webs",
-      "city"
-    ];
-    const updates: any = {};
-
-    for (const key of Object.keys(req.body)) {
-      if (allowed.includes(key)) updates[key] = req.body[key];
-    }
-
-    const clinicaActualizada = await Clinica.findByIdAndUpdate(id, updates, {
-      new: true, //devuelve el documento actualizado
-      runValidators: true, // fuerza validaciones del schema (ej enum en type)
+    // Usamos directamente req.body para que acepte cualquier campo que venga de Apidog
+    const clinicaActualizada = await Clinica.findByIdAndUpdate(id, req.body, {
+      new: true, // Devuelve el documento actualizado
+      runValidators: true, // Fuerza validaciones del schema
     });
 
     if (!clinicaActualizada) {
-      return res.status(404).json({ error: "Clinica no encontrado" });
+      return res.status(404).json({ error: "Clínica no encontrada para actualizar" });
     }
 
     return res.json(clinicaActualizada);
@@ -91,31 +73,31 @@ export const actualizarClinica = async (req: Request, res: Response) => {
       );
 
       return res.status(400).json({
-        error: "Validacion fallida",
+        error: "Validación fallida",
         mensajes,
       });
     }
 
-    console.error("Error al actualizar la clinica:", error);
-    res.status(500).json({ error: "Error al actualizar la clinica" });
+    console.error("Error al actualizar la clínica:", error);
+    res.status(500).json({ error: "Error al actualizar la clínica" });
   }
 };
 
-//Eliminar plan por ID
+// Eliminar clínica por ID
 export const eliminarClinica = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-
     const clinica = await Clinica.findByIdAndDelete(id);
 
-    if (!clinica) return res.status(400).json({ error: "Clinica no encontrada" });
+    if (!clinica) return res.status(404).json({ error: "Clínica no encontrada" });
 
     res.status(200).json({
-      mensaje: "Clinica eliminada correctamente",
+      ok: true,
+      mensaje: "Clínica eliminada correctamente",
       clinica: clinica,
     });
   } catch (error) {
-    console.error("Error eliminar clinica:", error);
-    res.status(500).json({ error: "Error al eliminar la clinica" });
+    console.error("Error eliminar clínica:", error);
+    res.status(500).json({ error: "Error al eliminar la clínica" });
   }
 };
