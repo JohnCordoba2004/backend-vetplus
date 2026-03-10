@@ -1,19 +1,25 @@
 import { Router } from "express";
-
 import {
   obtenerOtros,
   obtenerOtrosPorId,
   crearOtros,
   actualizarOtros,
   eliminarOtros
-} from "../controllers/otros.controllers"
+} from "../controllers/otros.controllers";
+import { validarJWT } from "../middlewares/auth.middleware"; // Importamos tu portero
 
-const router = Router()
+const router = Router();
 
-//base: /api/profesionales
-router.get("/", obtenerOtros)
-router.get("/:id", obtenerOtrosPorId)
-router.post("/", crearOtros)
-router.put("/:id", actualizarOtros)
-router.delete("/:id", eliminarOtros)
+// BASE: /api/otros
+
+// --- RUTAS PÚBLICAS (Cualquiera las puede ver) ---
+router.get("/", obtenerOtros);
+router.get("/:id", obtenerOtrosPorId);
+
+// --- RUTAS PROTEGIDAS (Solo tú con el Token) ---
+// Añadimos [validarJWT] antes del controlador
+router.post("/", [validarJWT], crearOtros);
+router.put("/:id", [validarJWT], actualizarOtros);
+router.delete("/:id", [validarJWT], eliminarOtros);
+
 export default router;

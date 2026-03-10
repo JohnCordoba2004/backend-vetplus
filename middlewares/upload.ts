@@ -1,33 +1,41 @@
 import multer from "multer";
 import path from "path";
 
-// Carpeta donde se guardaran las imagenes
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/"); //carpeta en la raiz del proyecto
+    cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
-    // 1. extraemos la extension (ej: .png)
-    const ext = path.extname(file.originalname);
-    // 2. Extraemos el nombre base sin la extension
+    const ext = path.extname(file.originalname).toLowerCase();
+
+    // SEGURIDAD: Limpiamos el nombre de caracteres extraños (puntos extras, espacios, etc)
     const nameOnly = path.basename(file.originalname, ext)
+      .replace(/\s+/g, '-')           // Cambia espacios por guiones
+      .replace(/[^a-zA-Z0-9-]/g, ''); // Solo permite letras, números y guiones
+
     cb(null, `${Date.now()}-${nameOnly}${ext}`);
   },
 });
 
-// Filtrar solo imagenes
 const fileFilter = (req: any, file: any, cb: any) => {
-  const allowed = ["image/jpeg", "image/png", "image/jpg"];
+  const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+  // SEGURIDAD: También verificamos la extensión real del archivo
+  const ext = path.extname(file.originalname).toLowerCase();
+  const allowedExts = [".jpg", ".jpeg", ".png"];
 
-  if (allowed.includes(file.mimetype)) {
+  if (allowedTypes.includes(file.mimetype) && allowedExts.includes(ext)) {
     cb(null, true);
   } else {
-    cb(new Error("Solo se permiten imagenes (jpg, jpeg,  png)"), false);
+    // Esto envía un error claro si alguien intenta subir un .exe o .js
+    cb(new Error("Solo se permiten imágenes (jpg, jpeg, png)"), false);
   }
 };
 
 export const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 2 * 1024 * 1024 }, //2 MB
+  limits: {
+    fileSize: 2 * 1024 * 1024, // 2 MB
+    files: 1                   // SEGURIDAD: Solo permite 1 archivo a la vez
+  },
 });
