@@ -35,17 +35,27 @@ export const obtenerPlanesPorTipo = async (req: Request, res: Response) => {
 };
 
 // crear un nuevo plan
+// crear uno o varios planes
 export const crearPlan = async (req: Request, res: Response) => {
   try {
-    // Usamos req.body directamente para simplificar
-    const nuevoPlan = new Plan(req.body);
-    await nuevoPlan.save();
+    const data = req.body;
 
+    // Si mandas un array [], usamos insertMany. Si es uno solo {}, usamos save().
+    if (Array.isArray(data)) {
+      const nuevosPlanes = await Plan.insertMany(data);
+      return res.status(201).json(nuevosPlanes);
+    }
+
+    const nuevoPlan = new Plan(data);
+    await nuevoPlan.save();
     res.status(201).json(nuevoPlan);
+
   } catch (error: any) {
-    if (error.name === "ValidationError") {
-      const mensajes = Object.values(error.errors).map((err: any) => err.message);
-      return res.status(400).json({ error: "Validación fallida", mensajes });
+    if (error.name === "ValidationError" || error.name === "BulkWriteError") {
+      return res.status(400).json({
+        error: "Validación fallida",
+        detalles: error.message
+      });
     }
     res.status(500).json({ error: "Error interno del servidor" });
   }

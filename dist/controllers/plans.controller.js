@@ -23,14 +23,14 @@ const obtenerPlanesPorID = async (req, res) => {
         const plan = await Plan_1.default.findById(id);
         if (!plan)
             return res.status(404).json({ error: "Plan no encontrado" });
-        res.json(plan); //✅DEvulve el plan
+        res.json(plan);
     }
     catch (error) {
         res.status(500).json({ error: "Error al obtener el plan por ID" });
     }
 };
 exports.obtenerPlanesPorID = obtenerPlanesPorID;
-// 🔍 obtener por tipo (dog o cat)
+// obtener por tipo (dog o cat)
 const obtenerPlanesPorTipo = async (req, res) => {
     try {
         const { tipo } = req.params;
@@ -43,75 +43,63 @@ const obtenerPlanesPorTipo = async (req, res) => {
 };
 exports.obtenerPlanesPorTipo = obtenerPlanesPorTipo;
 // crear un nuevo plan
+// crear uno o varios planes
 const crearPlan = async (req, res) => {
     try {
-        const { type, name, desc, descName, descPrice, benefits, price, img } = req.body;
-        const nuevoPlan = new Plan_1.default({ type, name, desc, descName, descPrice, benefits, price, img });
+        const data = req.body;
+        // Si mandas un array [], usamos insertMany. Si es uno solo {}, usamos save().
+        if (Array.isArray(data)) {
+            const nuevosPlanes = await Plan_1.default.insertMany(data);
+            return res.status(201).json(nuevosPlanes);
+        }
+        const nuevoPlan = new Plan_1.default(data);
         await nuevoPlan.save();
         res.status(201).json(nuevoPlan);
     }
     catch (error) {
-        if (error.name === "ValidationError") {
-            const mensajes = Object.values(error.errors).map((err) => err.message);
+        if (error.name === "ValidationError" || error.name === "BulkWriteError") {
             return res.status(400).json({
-                error: "Validacion fallida",
-                mensajes,
+                error: "Validación fallida",
+                detalles: error.message
             });
         }
         res.status(500).json({ error: "Error interno del servidor" });
     }
 };
 exports.crearPlan = crearPlan;
-// Actualizar plan por id
+// ACTUALIZAR (Corregido y optimizado)
 const actualizarPlan = async (req, res) => {
     try {
         const { id } = req.params;
-        //Opcion: aceptar solo campos permitidos para evitar update inesperado
-        const allowed = [
-            "type",
-            "name",
-            "desc",
-            "descName",
-            "descPrice",
-            "benefits",
-            "price",
-            "img",
-        ];
-        const updates = {};
-        for (const key of Object.keys(req.body)) {
-            if (allowed.includes(key))
-                updates[key] = req.body[key];
-        }
-        const planActualizado = await Plan_1.default.findByIdAndUpdate(id, updates, {
-            new: true, //devuelve el documento actualizado
-            runValidators: true, // fuerza validaciones del schema (ej enum en type)
+        // Quitamos el filtro "allowed" para que puedas editar cualquier campo del modelo
+        const planActualizado = await Plan_1.default.findByIdAndUpdate(id, req.body, {
+            new: true, // Devuelve el documento ya editado
+            runValidators: true, // Asegura que los cambios cumplan con el Schema
         });
         if (!planActualizado) {
-            return res.status(404).json({ error: "Plan no encontrado" });
+            return res.status(404).json({ error: "Plan no encontrado para actualizar" });
         }
         return res.json(planActualizado);
     }
     catch (error) {
         if (error.name === "ValidationError") {
             const mensajes = Object.values(error.errors).map((err) => err.message);
-            return res.status(400).json({
-                error: "Validacion fallida",
-                mensajes,
-            });
+            return res.status(400).json({ error: "Validación fallida", mensajes });
         }
         console.error("Error al actualizar plan:", error);
         res.status(500).json({ error: "Error al actualizar el plan" });
     }
 };
 exports.actualizarPlan = actualizarPlan;
-//Eliminar plan por ID
+// Eliminar plan por ID
 const eliminarPlan = async (req, res) => {
     try {
         const { id } = req.params;
         const plan = await Plan_1.default.findByIdAndDelete(id);
         if (!plan)
-            return res.status(400).json({ error: "Plan no encontrado" });
+            return res.status(404).json({ error: "Plan no encontrado" });
         res.status(200).json({
+            ok: true,
             mensaje: "Plan eliminado correctamente",
             plan: plan,
         });
