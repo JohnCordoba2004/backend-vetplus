@@ -23,7 +23,7 @@ export const login = async (req: Request, res: Response) => {
     const token = jwt.sign(
       { uid: usuarioDB.id },
       process.env.JWT_SECRET || 'secret',
-      { expiresIn: '24h' }
+      { expiresIn: '1h' }
     );
 
     res.json({
