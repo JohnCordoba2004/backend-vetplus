@@ -9,7 +9,7 @@ export interface IPlan extends Document {
   city: string;
 }
 
-const PlanSchema = new Schema<IPlan>({
+const ClinicaSchema = new Schema<IPlan>({
   name: {
     type: String,
     required: [true, "El nombre es obligatorio"],
@@ -66,4 +66,4 @@ const PlanSchema = new Schema<IPlan>({
   }
 });
 
-export default model<IPlan>("Clinica", PlanSchema);
+export default model<IPlan>("Clinica", ClinicaSchema);
