@@ -1,10 +1,14 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model } from "mongoose";
 
 const UsuarioSchema = new Schema({
   nombre: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, default: 'ADMIN_ROLE', enum: ['ADMIN_ROLE', 'USER_ROLE'] }
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
 });
 
 // Quitamos la contraseña cuando devolvamos el JSON por seguridad
@@ -14,4 +18,4 @@ UsuarioSchema.methods.toJSON = function () {
   return usuario;
 };
 
-export default model('Usuario', UsuarioSchema);
+export default model("Usuario", UsuarioSchema);

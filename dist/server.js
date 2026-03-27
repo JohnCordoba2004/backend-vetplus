@@ -16,19 +16,20 @@ const plans_routes_1 = __importDefault(require("./routes/plans.routes"));
 const clinica_routes_1 = __importDefault(require("./routes/clinica.routes"));
 const profesionales_routes_1 = __importDefault(require("./routes/profesionales.routes"));
 const otros_routes_1 = __importDefault(require("./routes/otros.routes"));
+const mascota_routes_1 = __importDefault(require("./routes/mascota.routes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 // 1. CONFIGURACIÓN DE CORS (Debe ir antes de las rutas)
 const corsOptions = {
-    origin: 'http://localhost:5173',
-    optionsSuccessStatus: 200
+    origin: "http://localhost:5173",
+    optionsSuccessStatus: 200,
 };
 // Middleware sencillo para limpiar caracteres de inyección NoSQL ($ y .)
 const simpleSanitize = (req, res, next) => {
     const sanitize = (obj) => {
         if (obj instanceof Object) {
             for (const key in obj) {
-                if (key.startsWith('$') || key.includes('.')) {
+                if (key.startsWith("$") || key.includes(".")) {
                     delete obj[key];
                 }
                 else {
@@ -46,8 +47,8 @@ const simpleSanitize = (req, res, next) => {
 app.use(simpleSanitize);
 app.use((0, cors_1.default)(corsOptions)); // Ahora sí protege todo lo que sigue
 // 2. MIDDLEWARES DE SEGURIDAD Y PARSING
-app.use(express_1.default.json({ limit: '10kb' }));
-app.use(express_1.default.urlencoded({ extended: true, limit: '10kb' }));
+app.use(express_1.default.json({ limit: "10kb" }));
+app.use(express_1.default.urlencoded({ extended: true, limit: "10kb" }));
 /* app.use(mongoSanitize({
   replaceWith: '_',
 })); */
@@ -60,11 +61,14 @@ app.use("/api/planes", plans_routes_1.default);
 app.use("/api/clinicas", clinica_routes_1.default);
 app.use("/api/profesionales", profesionales_routes_1.default);
 app.use("/api/otros", otros_routes_1.default);
+app.use("/api/mascotas", mascota_routes_1.default);
 app.use("/uploads", express_1.default.static(path_1.default.join(__dirname, "../uploads")));
 // 5. MANEJO DE ERRORES (Siempre al final de las rutas)
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ error: 'Algo salió mal en el servidor, intenta más tarde.' });
+    res
+        .status(500)
+        .json({ error: "Algo salió mal en el servidor, intenta más tarde." });
 });
 // 6. ¡EL ARRANQUE! (Te faltaba esta parte fuera de los comentarios)
 const PORT = process.env.PORT || 3000;
