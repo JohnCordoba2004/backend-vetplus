@@ -13,14 +13,15 @@ import plansRoutes from "./routes/plans.routes";
 import clinicaRoutes from "./routes/clinica.routes";
 import profesionalesRoutes from "./routes/profesionales.routes";
 import otrosRoutes from "./routes/otros.routes";
+import mascotaRoutes from "./routes/mascota.routes";
 
 dotenv.config();
 const app = express();
 
 // 1. CONFIGURACIÓN DE CORS (Debe ir antes de las rutas)
 const corsOptions = {
-  origin: 'http://localhost:5173',
-  optionsSuccessStatus: 200
+  origin: "http://localhost:5173",
+  optionsSuccessStatus: 200,
 };
 
 // Middleware sencillo para limpiar caracteres de inyección NoSQL ($ y .)
@@ -28,7 +29,7 @@ const simpleSanitize = (req: any, res: any, next: any) => {
   const sanitize = (obj: any) => {
     if (obj instanceof Object) {
       for (const key in obj) {
-        if (key.startsWith('$') || key.includes('.')) {
+        if (key.startsWith("$") || key.includes(".")) {
           delete obj[key];
         } else {
           sanitize(obj[key]);
@@ -46,13 +47,12 @@ const simpleSanitize = (req: any, res: any, next: any) => {
 app.use(simpleSanitize);
 app.use(cors(corsOptions)); // Ahora sí protege todo lo que sigue
 // 2. MIDDLEWARES DE SEGURIDAD Y PARSING
-app.use(express.json({ limit: '10kb' }));
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(express.json({ limit: "10kb" }));
+app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 /* app.use(mongoSanitize({
   replaceWith: '_',
 })); */
 app.use(helmet());
-
 
 // 3. CONEXIÓN A BASE DE DATOS
 connectDB();
@@ -63,12 +63,15 @@ app.use("/api/planes", plansRoutes);
 app.use("/api/clinicas", clinicaRoutes);
 app.use("/api/profesionales", profesionalesRoutes);
 app.use("/api/otros", otrosRoutes);
+app.use("/api/mascotas", mascotaRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // 5. MANEJO DE ERRORES (Siempre al final de las rutas)
 app.use((err: any, req: any, res: any, next: any) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Algo salió mal en el servidor, intenta más tarde.' });
+  res
+    .status(500)
+    .json({ error: "Algo salió mal en el servidor, intenta más tarde." });
 });
 
 // 6. ¡EL ARRANQUE! (Te faltaba esta parte fuera de los comentarios)

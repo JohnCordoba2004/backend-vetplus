@@ -12,7 +12,7 @@ import { validarJWT } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-// Base: /api/planes
+// Base: /api/mascota
 /* Rutas publicas */
 router.get("/", obtenerMascotas);
 router.get("/:id", obtenerMascotasPorId);
