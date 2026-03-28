@@ -26,6 +26,7 @@ export const obtenerClinicasPorId = async (req: Request, res: Response) => {
 // Crear nueva clinica
 export const crearClinica = async (req: Request, res: Response) => {
   try {
+    
     if (Array.isArray(req.body)) {
       const nuevasClinicas = await Clinica.insertMany(req.body, { ordered: true });
       return res.status(201).json(nuevasClinicas);

@@ -15,10 +15,7 @@ const router = Router();
 /* Rutas publicas */
 router.get("/", obtenerMascotas);
 router.get("/:id", obtenerMascotasPorId);
-
-/* Rutas protegidas */
-/* Anadimos [validarJTW] antes del controlador */
-router.post("/", [validarJWT], crearMascota);
+router.post("/", crearMascota);// -Sin token para el user
 
 // ruta protegida solo para admin
 router.put("/:id", [validarJWT, validarAdmin], actualizarMascota);
