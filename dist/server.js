@@ -17,6 +17,7 @@ const clinica_routes_1 = __importDefault(require("./routes/clinica.routes"));
 const profesionales_routes_1 = __importDefault(require("./routes/profesionales.routes"));
 const otros_routes_1 = __importDefault(require("./routes/otros.routes"));
 const mascota_routes_1 = __importDefault(require("./routes/mascota.routes"));
+const afiliacion_routes_1 = __importDefault(require("./routes/afiliacion.routes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 // 1. CONFIGURACIÓN DE CORS (Debe ir antes de las rutas)
@@ -62,6 +63,7 @@ app.use("/api/clinicas", clinica_routes_1.default);
 app.use("/api/profesionales", profesionales_routes_1.default);
 app.use("/api/otros", otros_routes_1.default);
 app.use("/api/mascotas", mascota_routes_1.default);
+app.use("/api/afiliaciones", afiliacion_routes_1.default);
 app.use("/uploads", express_1.default.static(path_1.default.join(__dirname, "../uploads")));
 // 5. MANEJO DE ERRORES (Siempre al final de las rutas)
 app.use((err, req, res, next) => {
