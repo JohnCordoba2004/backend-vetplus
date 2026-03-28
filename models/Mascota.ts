@@ -44,38 +44,34 @@ export const mascotaSchema = new Schema<IPlan>({
   },
   raza: {
     type: String,
-    required: [true, "El nombre debe ser obligatorio"],
     trim: true,
   },
   edad: {
     type: String,
-    required: [true, "El nombre debe ser obligatorio"],
+    required: [true, "La edad debe ser obligatoria"],
     trim: true,
   },
   peso: {
     type: String,
-    required: [true, "El peso debe ser obligatorio"],
     trim: true,
   },
   comSupo: {
     type: String,
-    required: [true, "Como supo debe ser obligatorio"],
     trim: true,
   },
   detalleComoSupo: {
     type: String,
-    required: [true, "El detalle debe ser obligatorio"],
     trim: true,
   },
   planSeleccionado: {
     type: String,
-    required: [true, "El nombre debe ser obligatorio"],
+    required: [true, "El plan debe ser obligatorio"],
     enum: ["Diamante", "Esmeralda", "Silver", "Senior"],
     trim: true,
   },
   tipoPreventivo: {
     type: String,
-    required: [true, "El nombre debe ser obligatorio"],
+    required: [true, "Debe ser Obligatorio el tipo preventivo"],
     enum: ["Premium", "Basico"],
     trim: true,
   },
