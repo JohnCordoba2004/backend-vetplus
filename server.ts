@@ -14,6 +14,7 @@ import clinicaRoutes from "./routes/clinica.routes";
 import profesionalesRoutes from "./routes/profesionales.routes";
 import otrosRoutes from "./routes/otros.routes";
 import mascotaRoutes from "./routes/mascota.routes";
+import afiliacionRoutes from "./routes/afiliacion.routes";
 
 dotenv.config();
 const app = express();
@@ -64,6 +65,7 @@ app.use("/api/clinicas", clinicaRoutes);
 app.use("/api/profesionales", profesionalesRoutes);
 app.use("/api/otros", otrosRoutes);
 app.use("/api/mascotas", mascotaRoutes);
+app.use("/api/afiliaciones", afiliacionRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // 5. MANEJO DE ERRORES (Siempre al final de las rutas)
