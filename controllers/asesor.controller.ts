@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Asesor } from "../models/Contacto";
+import { Asesor } from "../models/Asesor";
 import * as nodemailer from "nodemailer";
 /* Metodo para los mail */
 const trasnporter = nodemailer.createTransport({
