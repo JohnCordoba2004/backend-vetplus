@@ -21,7 +21,7 @@ dotenv_1.default.config();
 const app = (0, express_1.default)();
 // 1. CONFIGURACIÓN DE CORS (Debe ir antes de las rutas)
 const corsOptions = {
-    origin: "http://localhost:5173",
+    origin: "*",
     optionsSuccessStatus: 200,
 };
 // Middleware sencillo para limpiar caracteres de inyección NoSQL ($ y .)
