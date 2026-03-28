@@ -11,3 +11,12 @@ export const crearAfiliacion = async (req: Request, res: Response) => {
     res.status(500).json({ ok: false, msg: "Error al guardar la afiliación" });
   }
 };
+
+export const obtenerAfiliacion = async (req: Request, res: Response) => {
+  try {
+    const af = await Afiliacion.find();
+    res.json(af);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener los planes" });
+  }
+};
