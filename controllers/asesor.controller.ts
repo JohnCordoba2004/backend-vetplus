@@ -11,7 +11,7 @@ export const crearAsesor = async (req: Request, res: Response) => {
 
     // Correo al asesor
     await resend.emails.send({
-      from: "onboarding@resend.dev",
+      from: "onboarding@resend.dev", //Domminio gratuito de resend
       to: process.env.EMAIL_ASESOR!,
       subject: "Nuevo cliente interesado en VetPlus",
       html: `
