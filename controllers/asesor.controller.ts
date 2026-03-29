@@ -34,6 +34,7 @@ export const crearAsesor = async (req: Request, res: Response) => {
     });
     res.status(201).json({ ok: true, as });
   } catch (error) {
+    console.error("Error en crearAsesor:", error);
     res.status(500).json({ error: "Error al crear al asesor" });
   }
 };
