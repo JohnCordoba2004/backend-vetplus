@@ -21,6 +21,7 @@ export const crearAsesor = async (req: Request, res: Response) => {
         <p><b>Email:</b> ${req.body.email}</p>
         <p><b>Mascota:</b> ${req.body.nombreMascota} (${req.body.especie})</p>
         <p><b>Plan:</b> ${req.body.planSeleccionado}</p>
+        <p><b>Cobertura:</b>${req.body.cobertura}</p>
       `,
     });
 
