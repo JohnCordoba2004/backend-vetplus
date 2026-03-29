@@ -4,8 +4,8 @@ const asesorSchema = new Schema({
   //Datos del asesor
   nombres: { type: String, required: true },
   apellidos: { type: String, required: true },
-  documento: { type: String, required: true },
   email: { type: String, required: true },
+  celular: { type: String, required: true },
 
   // Datos de la mascota (vienen del store de Pinia)
   especie: { type: String },
