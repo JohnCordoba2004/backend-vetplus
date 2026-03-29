@@ -1,37 +1,42 @@
 import { Request, Response } from "express";
 import { Asesor } from "../models/Asesor";
-import * as nodemailer from "nodemailer";
-/* Metodo para los mail */
-const trasnporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.PASS_USER,
-  },
-});
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const crearAsesor = async (req: Request, res: Response) => {
   try {
     const as = new Asesor(req.body);
     await as.save();
+
     // Correo al asesor
-    await trasnporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_ASESOR,
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: process.env.EMAIL_ASESOR!,
       subject: "Nuevo cliente interesado en VetPlus",
-      html: `<p>El cliente <b>${req.body.nombres} ${req.body.apellidos}</b> quiere ser contactado.</p>
-         <p>Celular: ${req.body.celular}</p>
-         <p>Email: ${req.body.email}</p>`,
+      html: `
+        <h2>Nuevo cliente interesado</h2>
+        <p><b>Nombre:</b> ${req.body.nombres} ${req.body.apellidos}</p>
+        <p><b>Celular:</b> ${req.body.celular}</p>
+        <p><b>Email:</b> ${req.body.email}</p>
+        <p><b>Mascota:</b> ${req.body.nombreMascota} (${req.body.especie})</p>
+        <p><b>Plan:</b> ${req.body.planSeleccionado}</p>
+      `,
     });
 
     // Correo de confirmación al cliente
-    await trasnporter.sendMail({
-      from: process.env.EMAIL_USER,
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
       to: req.body.email,
       subject: "Recibimos tu solicitud - VetPlus",
-      html: `<p>Hola <b>${req.body.nombres}</b>, recibimos tu solicitud.</p>
-         <p>Un asesor se comunicará contigo pronto.</p>`,
+      html: `
+        <h2>¡Hola ${req.body.nombres}!</h2>
+        <p>Recibimos tu solicitud correctamente.</p>
+        <p>Un asesor de VetPlus se comunicará contigo pronto al celular <b>${req.body.celular}</b>.</p>
+        <p>Gracias por confiar en nosotros.</p>
+      `,
     });
+
     res.status(201).json({ ok: true, as });
   } catch (error) {
     console.error("Error en crearAsesor:", error);
