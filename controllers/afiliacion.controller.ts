@@ -35,7 +35,7 @@ export const crearAfiliacion = async (req: Request, res: Response) => {
         <p><b>Valor mensual del paquete:</b> ${req.body.valorMensual}</p>
         <p><b>Valor total a pagar:</b> ${inscripcionMasCobertura}</p>
         <p><b>Plan:</b> ${req.body.planSeleccionado}</p>
-        <p><b>Cobertura:</b>${req.body.cobertura}</p>
+        <p><b>Cobertura del plan:</b>${req.body.cobertura}</p>
       `,
     });
 
