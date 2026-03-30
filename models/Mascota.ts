@@ -28,7 +28,7 @@ export const mascotaSchema = new Schema<IPlan>({
   especie: {
     type: String,
     required: [true, "La especie es obligatoria"],
-    enum: ["Perros", "Gatos"],
+    enum: ["Perro", "Gato"],
     trim: true,
   },
   esDeRaza: {
