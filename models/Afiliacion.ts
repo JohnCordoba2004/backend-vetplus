@@ -21,6 +21,7 @@ const AfiliacionSchema = new Schema(
     fechaNacimiento: { type: String },
     colorMascota: { type: String },
     microchip: { type: String },
+    esDeRaza: { type: String },
 
     // Datos del plan
     planSeleccionado: { type: String },

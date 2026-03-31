@@ -9,20 +9,81 @@ export const crearAsesor = async (req: Request, res: Response) => {
     const as = new Asesor(req.body);
     await as.save();
 
+    const valorInscripcion = 70000;
+    const inscripcionMasCobertura = valorInscripcion + req.body.valorMensual;
+
     // Correo al asesor
     await resend.emails.send({
       from: "onboarding@resend.dev", //Domminio gratuito de resend
       to: process.env.EMAIL_ASESOR!,
       subject: "Nuevo cliente interesado en VetPlus",
       html: `
-        <h2>Nuevo cliente interesado</h2>
+      <div style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 20px;">
+      <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+      <td align="center">
+      <table width="600" style="background: #ffffff; border-radius: 10px; overflow: hidden;">
+      <!-- HEADER -->
+      <tr>
+        <td style="background: #2563eb; color: white; padding: 20px; text-align: center;">
+          <h2 style="margin: 0;">🐾 VetPlus</h2>
+          <p style="margin: 5px 0 0;">Nuevo cliente interesado</p>
+        </td>
+      </tr>
+
+      <!-- BODY -->
+      <tr>
+        <td style="padding: 20px;">
+
+        <h3 style="color: #333;">👤 Datos del cliente</h3>
         <p><b>Nombre:</b> ${req.body.nombres} ${req.body.apellidos}</p>
         <p><b>Celular:</b> ${req.body.celular}</p>
         <p><b>Email:</b> ${req.body.email}</p>
-        <p><b>Mascota:</b> ${req.body.nombreMascota} (${req.body.especie})</p>
+
+        <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;" />
+
+        <h3 style="color: #333;">🐶 Datos de la mascota 😺</h3>
+        <p><b>Nombre:</b> ${req.body.nombreMascota}</p>
+        <p><b>Especie:</b> ${req.body.especie}</p>
+        <p><b>Es de raza:</b> ${req.body.esDeRaza || "No es de Raza"}</p>}
+        <p><b>Raza:</b> ${req.body.raza}</p>
+        <p><b>Edad:</b> ${req.body.edad}</p>
+
+        <p><b>Fecha Nacimiento:</b> ${req.body.fechaNacimiento}</p>
+        <p><b>Color:</b> ${req.body.colorMascota}</p>
+        <p><b>Microchip:</b> ${req.body.microchip || "No aplica"}</p>}
+        
+        <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;" />
+
+        <h3 style="color: #333;">💳 Plan seleccionado</h3>
+        
         <p><b>Plan:</b> ${req.body.planSeleccionado}</p>
-        <p><b>Cobertura:</b>${req.body.cobertura}</p>
-      `,
+        <p><b>Cobertura:</b> ${req.body.cobertura}</p>
+        <p><b>Preventivo:</b> ${req.body.tipoPreventivo}</p>
+
+        <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-top: 15px;">
+          <p><b>Inscripción:</b> $${valorInscripcion.toLocaleString()}</p>
+          <p><b>Valor Mensual del paquete:</b> $${req.body.valorMensual.toLocaleString()}</p>
+          <p style="font-size: 18px; color: #2563eb;">
+            <b>Total:</b> $${inscripcionMasCobertura.toLocaleString()}
+          </p>
+        </div>
+
+        </td>
+        </tr>
+        <!-- FOOTER -->
+        <tr>
+        <td style="background: #f9fafb; text-align: center; padding: 15px; font-size: 12px; color: #888;">
+          Este mensaje fue generado automáticamente desde VetPlus 🐾
+        </td>
+        </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</div>
+`,
     });
 
     // Correo de confirmación al cliente

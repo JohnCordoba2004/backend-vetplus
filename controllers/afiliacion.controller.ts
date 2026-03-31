@@ -44,22 +44,28 @@ export const crearAfiliacion = async (req: Request, res: Response) => {
 
         <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;" />
 
-        <h3 style="color: #333;">🐶 Datos de la mascota</h3>
+        <h3 style="color: #333;">🐶 Datos de la mascota 😺</h3>
         <p><b>Nombre:</b> ${req.body.nombreMascota}</p>
         <p><b>Especie:</b> ${req.body.especie}</p>
-        <p><b>Color:</b> ${req.body.colorMascota}</p>
-        ${req.body.microchip ? `<p><b>Microchip:</b> ${req.body.microchip}</p>` : ""}
+        <p><b>Es de raza:</b> ${req.body.esDeRaza || "No es de Raza"}</p>}
+        <p><b>Raza:</b> ${req.body.raza}</p>
+        <p><b>Edad:</b> ${req.body.edad}</p>
 
+        <p><b>Fecha Nacimiento:</b> ${req.body.fechaNacimiento}</p>
+        <p><b>Color:</b> ${req.body.colorMascota}</p>
+        <p><b>Microchip:</b> ${req.body.microchip || "No aplica"}</p>}
+        
   	    <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;" />
 
         <h3 style="color: #333;">💳 Plan seleccionado</h3>
+        
         <p><b>Plan:</b> ${req.body.planSeleccionado}</p>
         <p><b>Cobertura:</b> ${req.body.cobertura}</p>
         <p><b>Preventivo:</b> ${req.body.tipoPreventivo}</p>
 
         <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-top: 15px;">
           <p><b>Inscripción:</b> $${valorInscripcion.toLocaleString()}</p>
-          <p><b>Mensual:</b> $${req.body.valorMensual.toLocaleString()}</p>
+          <p><b>Valor Mensual del paquete:</b> $${req.body.valorMensual.toLocaleString()}</p>
           <p style="font-size: 18px; color: #2563eb;">
             <b>Total:</b> $${inscripcionMasCobertura.toLocaleString()}
           </p>
@@ -70,7 +76,7 @@ export const crearAfiliacion = async (req: Request, res: Response) => {
         <!-- FOOTER -->
         <tr>
         <td style="background: #f9fafb; text-align: center; padding: 15px; font-size: 12px; color: #888;">
-          Este mensaje fue generado automáticamente desde VetPlus 🚀
+          Este mensaje fue generado automáticamente desde VetPlus 🐾
         </td>
         </tr>
         </table>
