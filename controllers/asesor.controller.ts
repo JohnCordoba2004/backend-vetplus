@@ -12,6 +12,8 @@ export const crearAsesor = async (req: Request, res: Response) => {
     const valorInscripcion = 70000;
     const inscripcionMasCobertura = valorInscripcion + req.body.valorMensual;
 
+    const esDeRaza = req.body.esDeRaza === true || req.body.esDeRaza === "true";
+
     // Correo al asesor
     await resend.emails.send({
       from: "onboarding@resend.dev", //Domminio gratuito de resend
@@ -45,13 +47,16 @@ export const crearAsesor = async (req: Request, res: Response) => {
         <h3 style="color: #333;">🐶 Datos de la mascota 😺</h3>
         <p><b>Nombre:</b> ${req.body.nombreMascota}</p>
         <p><b>Especie:</b> ${req.body.especie}</p>
-        <p><b>Es de raza:</b> ${req.body.esDeRaza || "No es de Raza"}</p>}
+        <p>
+        <b>Es de raza?:</b> 
+        ${esDeRaza ? "Es de raza" : "No es de Raza"}
+        </p>
         <p><b>Raza:</b> ${req.body.raza}</p>
         <p><b>Edad:</b> ${req.body.edad}</p>
 
         <p><b>Fecha Nacimiento:</b> ${req.body.fechaNacimiento}</p>
         <p><b>Color:</b> ${req.body.colorMascota}</p>
-        <p><b>Microchip:</b> ${req.body.microchip || "No aplica"}</p>}
+        <p><b>Microchip:</b> ${req.body.microchip || "No aplica"}</p>
         
         <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;" />
 
