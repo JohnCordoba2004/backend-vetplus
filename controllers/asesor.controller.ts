@@ -51,7 +51,9 @@ export const crearAsesor = async (req: Request, res: Response) => {
         <b>Es de raza?:</b> 
         ${esDeRaza ? "Es de raza" : "No es de Raza"}
         </p>
-        <p><b>Raza:</b> ${req.body.raza}</p>
+        <p><b>Raza:</b> 
+        ${req.body.raza ? req.body.raza : "No es de raza"}
+        </p>
         <p><b>Edad:</b> ${req.body.edad}</p>
 
         <p><b>Fecha Nacimiento:</b> ${req.body.fechaNacimiento}</p>
