@@ -3,7 +3,10 @@ import jwt from "jsonwebtoken";
 
 export const validarJWT = (req: any, res: Response, next: NextFunction) => {
   //Buscamos el token en los headers(Authorization: Bearrer <token>)
-  const token = req.header("Authorization")?.replace("Bearer", "");
+  const token = req
+    .header("Authorization")
+    ?.replace(/^Bearer\s+/i, "")
+    .trim();
   if (!token) {
     return res.status(401).json({ error: "No hay token en la peticion" });
   }
