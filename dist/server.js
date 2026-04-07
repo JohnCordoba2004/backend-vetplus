@@ -11,7 +11,6 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const database_1 = require("./database");
 const helmet_1 = __importDefault(require("helmet"));
 const auth_routes_1 = __importDefault(require("./routes/auth.routes")); // Importa tus nuevas rutas de login
-// import mongoSanitize from 'express-mongo-sanitize';
 const plans_routes_1 = __importDefault(require("./routes/plans.routes"));
 const clinica_routes_1 = __importDefault(require("./routes/clinica.routes"));
 const profesionales_routes_1 = __importDefault(require("./routes/profesionales.routes"));
@@ -51,9 +50,6 @@ app.use((0, cors_1.default)(corsOptions)); // Ahora sí protege todo lo que sigu
 // 2. MIDDLEWARES DE SEGURIDAD Y PARSING
 app.use(express_1.default.json({ limit: "10kb" }));
 app.use(express_1.default.urlencoded({ extended: true, limit: "10kb" }));
-/* app.use(mongoSanitize({
-  replaceWith: '_',
-})); */
 app.use((0, helmet_1.default)());
 // 3. CONEXIÓN A BASE DE DATOS
 (0, database_1.connectDB)();
