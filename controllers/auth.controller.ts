@@ -36,7 +36,7 @@ const isAuthTokenPayload = (
   (payload.type === "access" || payload.type === "refresh");
 
 const saveRefreshToken = async (uid: string, refreshToken: string) => {
-  const hashedRefreshToken = bcrypt.hashSync(refreshToken, 10);
+  const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
   await Usuario.findByIdAndUpdate(uid, { refreshToken: hashedRefreshToken });
 };
 
@@ -58,7 +58,8 @@ export const login = async (req: Request, res: Response) => {
       return res.status(404).json({ ok: false, msg: "Email no encontrado" });
     }
 
-    const validPassword = bcrypt.compareSync(password, usuarioDB.password);
+    console.log("[login] iniciando validacion password", { email });
+    const validPassword = await bcrypt.compare(password, usuarioDB.password);
     console.log("[login] password valida", { email, validPassword });
 
     if (!validPassword) {
@@ -70,6 +71,7 @@ export const login = async (req: Request, res: Response) => {
 
     await saveRefreshToken(usuarioDB.id, refreshToken);
     console.log("[login] refresh token guardado", { email, role: usuarioDB.role });
+    console.log("[login] respondiendo ok", { email, role: usuarioDB.role });
 
     return res.json({
       ok: true,
@@ -111,7 +113,7 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
         .json({ ok: false, msg: "Refresh token no valido" });
     }
 
-    const validRefreshToken = bcrypt.compareSync(
+    const validRefreshToken = await bcrypt.compare(
       refreshToken,
       usuarioDB.refreshToken,
     );
