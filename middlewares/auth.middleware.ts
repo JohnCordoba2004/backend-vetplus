@@ -17,11 +17,15 @@ export const validarJWT = (req: any, res: Response, next: NextFunction) => {
     req.usuario = payload; //Guardamos la info del usuario en la peticion
     next(); // ¡Todo bien! Pasa al siguiente paso
   } catch (error) {
+    // creo una variable isExpired.
+    //reviso si el error fue exactamente porque el token expiró.
     const isExpired =
       error instanceof Error && error.name === "TokenExpiredError";
-
+    // ahora el backend responde distinto según el caso.
     return res.status(401).json({
+      //si expiró, digo "Token expirado".
       error: isExpired ? "Token expirado" : "Token no valido",
+      //también mando un código más fácil de leer desde frontend: TOKEN_EXPIRED o TOKEN_INVALID.
       code: isExpired ? "TOKEN_EXPIRED" : "TOKEN_INVALID",
     });
   }
