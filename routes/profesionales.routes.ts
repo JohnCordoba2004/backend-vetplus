@@ -7,7 +7,7 @@ import {
   actualizarProfesionales,
   eliminarProfesionales
 } from "../controllers/profesional.controller"
-import { validarJWT } from "../middlewares/auth.middleware"; // Importamos tu portero
+import { validarAdmin, validarJWT } from "../middlewares/auth.middleware"; // Importamos tu portero
 
 const router = Router();
 
@@ -17,8 +17,8 @@ router.get("/", obtenerProfesionales);
 router.get("/:id", obtenerProfesionalesPorId);
 // --- RUTAS PROTEGIDAS (Solo tú con el Token) ---
 // Añadimos [validarJWT] antes del controlador
-router.post("/", [validarJWT], crearProfesionales);
-router.put("/:id", [validarJWT], actualizarProfesionales);
-router.delete("/:id", [validarJWT], eliminarProfesionales);
+router.post("/", [validarJWT, validarAdmin], crearProfesionales);
+router.put("/:id", [validarJWT, validarAdmin], actualizarProfesionales);
+router.delete("/:id", [validarJWT, validarAdmin], eliminarProfesionales);
 
 export default router;

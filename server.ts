@@ -7,7 +7,6 @@ import dotenv from "dotenv";
 import { connectDB } from "./database";
 import helmet from "helmet";
 import authRoutes from "./routes/auth.routes"; // Importa tus nuevas rutas de login
-// import mongoSanitize from 'express-mongo-sanitize';
 
 import plansRoutes from "./routes/plans.routes";
 import clinicaRoutes from "./routes/clinica.routes";
@@ -51,9 +50,6 @@ app.use(cors(corsOptions)); // Ahora sí protege todo lo que sigue
 // 2. MIDDLEWARES DE SEGURIDAD Y PARSING
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
-/* app.use(mongoSanitize({
-  replaceWith: '_',
-})); */
 app.use(helmet());
 
 // 3. CONEXIÓN A BASE DE DATOS

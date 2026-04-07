@@ -1,14 +1,5 @@
-// import { Router } from 'express';
-// import { login } from '../controllers/auth.controller';
-
-// const router = Router();
-
-// router.post('/login', login);
-
-// export default router;
-
 import { Router } from "express";
-import { login } from "../controllers/auth.controller";
+import { login, refreshAccessToken } from "../controllers/auth.controller";
 import { validarJWT, validarAdmin } from "../middlewares/auth.middleware";
 import {
   crearMascota,
@@ -19,6 +10,7 @@ const router = Router();
 
 // Login (para todos)
 router.post("/login", login);
+router.post("/refresh", refreshAccessToken);
 
 // Rutas de usuario normal (crear mascota)
 router.post("/mascota", validarJWT, crearMascota);

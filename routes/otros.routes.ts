@@ -6,7 +6,7 @@ import {
   actualizarOtros,
   eliminarOtros
 } from "../controllers/otros.controllers";
-import { validarJWT } from "../middlewares/auth.middleware"; // Importamos tu portero
+import { validarAdmin, validarJWT } from "../middlewares/auth.middleware"; // Importamos tu portero
 
 const router = Router();
 
@@ -18,8 +18,8 @@ router.get("/:id", obtenerOtrosPorId);
 
 // --- RUTAS PROTEGIDAS (Solo tú con el Token) ---
 // Añadimos [validarJWT] antes del controlador
-router.post("/", [validarJWT], crearOtros);
-router.put("/:id", [validarJWT], actualizarOtros);
-router.delete("/:id", [validarJWT], eliminarOtros);
+router.post("/", [validarJWT, validarAdmin], crearOtros);
+router.put("/:id", [validarJWT, validarAdmin], actualizarOtros);
+router.delete("/:id", [validarJWT, validarAdmin], eliminarOtros);
 
 export default router;

@@ -4,6 +4,7 @@ const UsuarioSchema = new Schema({
   nombre: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  refreshToken: { type: String, default: null, select: false },
   role: {
     type: String,
     enum: ["user", "admin"],
@@ -13,7 +14,7 @@ const UsuarioSchema = new Schema({
 
 // Quitamos la contraseña cuando devolvamos el JSON por seguridad
 UsuarioSchema.methods.toJSON = function () {
-  const { __v, password, _id, ...usuario } = this.toObject();
+  const { __v, password, refreshToken, _id, ...usuario } = this.toObject();
   usuario.uid = _id;
   return usuario;
 };

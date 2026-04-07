@@ -17,7 +17,13 @@ export const validarJWT = (req: any, res: Response, next: NextFunction) => {
     req.usuario = payload; //Guardamos la info del usuario en la peticion
     next(); // ¡Todo bien! Pasa al siguiente paso
   } catch (error) {
-    return res.status(401).json({ error: "Token no valido" });
+    const isExpired =
+      error instanceof Error && error.name === "TokenExpiredError";
+
+    return res.status(401).json({
+      error: isExpired ? "Token expirado" : "Token no valido",
+      code: isExpired ? "TOKEN_EXPIRED" : "TOKEN_INVALID",
+    });
   }
 };
 
