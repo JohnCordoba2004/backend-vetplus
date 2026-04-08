@@ -16,6 +16,7 @@ const ACCESS_TOKEN_EXPIRES_IN =
 const REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_SECRET || "refresh_secret";
 const REFRESH_TOKEN_EXPIRES_IN =
   (process.env.JWT_REFRESH_EXPIRES_IN as SignOptions["expiresIn"]) || "7d";
+const BCRYPT_HASH_PATTERN = /^\$2[aby]\$\d{2}\$/;
 
 const createAccessToken = (uid: string, role: string) =>
   jwt.sign({ uid, role, type: "access" }, ACCESS_TOKEN_SECRET, {
@@ -40,6 +41,18 @@ const saveRefreshToken = async (uid: string, refreshToken: string) => {
   await Usuario.findByIdAndUpdate(uid, { refreshToken: hashedRefreshToken });
 };
 
+const validatePassword = async (plainPassword: string, storedPassword: string) => {
+  if (!storedPassword) {
+    return false;
+  }
+
+  if (BCRYPT_HASH_PATTERN.test(storedPassword)) {
+    return bcrypt.compare(plainPassword, storedPassword);
+  }
+
+  return plainPassword === storedPassword;
+};
+
 export const login = async (req: Request, res: Response) => {
   const email = String(req.body.email ?? "").trim().toLowerCase();
   const password = String(req.body.password ?? "");
@@ -58,12 +71,25 @@ export const login = async (req: Request, res: Response) => {
       return res.status(404).json({ ok: false, msg: "Email no encontrado" });
     }
 
-    console.log("[login] iniciando validacion password", { email });
-    const validPassword = await bcrypt.compare(password, usuarioDB.password);
+    const storedPassword = String(usuarioDB.password ?? "");
+    const isHash = BCRYPT_HASH_PATTERN.test(storedPassword);
+    console.log("[login] tipo password almacenada", {
+      email,
+      isHash,
+      length: storedPassword.length,
+    });
+
+    const validPassword = await validatePassword(password, storedPassword);
     console.log("[login] password valida", { email, validPassword });
 
     if (!validPassword) {
       return res.status(400).json({ ok: false, msg: "Contraseña incorrecta" });
+    }
+
+    if (!isHash) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await Usuario.findByIdAndUpdate(usuarioDB.id, { password: hashedPassword });
+      console.log("[login] password migrada a hash", { email });
     }
 
     const token = createAccessToken(usuarioDB.id, usuarioDB.role);
