@@ -18,9 +18,8 @@ const router = Router();
 
 router.get("/", obtenerPlanes);
 router.get("/tipo/:tipo", obtenerPlanesPorTipo);
-// router.post("/", upload.single("img"), crearPlan); //'img' debe coincidir con el nombre del campo en el formulario
-router.post("/", [validarJWT, validarAdmin, upload.single("img")], crearPlan);
 router.get("/:id", obtenerPlanesPorID);
+router.post("/", [validarJWT, validarAdmin, upload.single("img")], crearPlan);
 router.put("/:id", [validarJWT, validarAdmin], actualizarPlan);
 router.delete("/:id", [validarJWT, validarAdmin], eliminarPlan);
 

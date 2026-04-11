@@ -41,7 +41,10 @@ const saveRefreshToken = async (uid: string, refreshToken: string) => {
   await Usuario.findByIdAndUpdate(uid, { refreshToken: hashedRefreshToken });
 };
 
-const validatePassword = async (plainPassword: string, storedPassword: string) => {
+const validatePassword = async (
+  plainPassword: string,
+  storedPassword: string,
+) => {
   if (!storedPassword) {
     return false;
   }
@@ -54,14 +57,18 @@ const validatePassword = async (plainPassword: string, storedPassword: string) =
 };
 
 export const login = async (req: Request, res: Response) => {
-  const email = String(req.body.email ?? "").trim().toLowerCase();
+  const email = String(req.body.email ?? "")
+    .trim()
+    .toLowerCase();
   const password = String(req.body.password ?? "");
 
   try {
     console.log("[login] inicio", { email });
 
     if (!email || !password) {
-      return res.status(400).json({ ok: false, msg: "Email y contraseña son obligatorios" });
+      return res
+        .status(400)
+        .json({ ok: false, msg: "Email y contraseña son obligatorios" });
     }
 
     const usuarioDB = await Usuario.findOne({ email });
@@ -88,7 +95,9 @@ export const login = async (req: Request, res: Response) => {
 
     if (!isHash) {
       const hashedPassword = await bcrypt.hash(password, 10);
-      await Usuario.findByIdAndUpdate(usuarioDB.id, { password: hashedPassword });
+      await Usuario.findByIdAndUpdate(usuarioDB.id, {
+        password: hashedPassword,
+      });
       console.log("[login] password migrada a hash", { email });
     }
 
@@ -96,7 +105,10 @@ export const login = async (req: Request, res: Response) => {
     const refreshToken = createRefreshToken(usuarioDB.id, usuarioDB.role);
 
     await saveRefreshToken(usuarioDB.id, refreshToken);
-    console.log("[login] refresh token guardado", { email, role: usuarioDB.role });
+    console.log("[login] refresh token guardado", {
+      email,
+      role: usuarioDB.role,
+    });
     console.log("[login] respondiendo ok", { email, role: usuarioDB.role });
 
     return res.json({

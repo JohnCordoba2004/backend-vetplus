@@ -6,15 +6,23 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB } from "./database";
 import helmet from "helmet";
-import authRoutes from "./routes/auth.routes"; // Importa tus nuevas rutas de login
 
-import plansRoutes from "./routes/plans.routes";
-import clinicaRoutes from "./routes/clinica.routes";
-import profesionalesRoutes from "./routes/profesionales.routes";
-import otrosRoutes from "./routes/otros.routes";
+/* Rutas routes */
+// import plansRoutes from "./routes/plans.routes";
+import authRoutes from "./routes/auth.routes"; // Importa tus nuevas rutas de login
+// import clinicaRoutes from "./routes/clinica.routes";
+// import profesionalesRoutes from "./routes/profesionales.routes";
+// import otrosRoutes from "./routes/otros.routes";
 import mascotaRoutes from "./routes/mascota.routes";
 import afiliacionRoutes from "./routes/afiliacion.routes";
 import asesorRoutes from "./routes/asesor.routes";
+
+/* Rutas modules */
+import plansRoutes from "./modules/Planes/plan.routes";
+import beneficiosRoutes from "./modules/beneficios/beneficios.routes";
+import clinicaRoutes from "./modules/Clinicas/clinica.routes";
+import profesionalesRoutes from "./modules/Profesionales/profesionales.routes";
+import otrosRoutes from "./modules/Otros/otros.routes";
 
 dotenv.config();
 const app = express();
@@ -65,6 +73,7 @@ app.use("/api/mascotas", mascotaRoutes);
 app.use("/api/afiliaciones", afiliacionRoutes);
 app.use("/api/asesor", asesorRoutes);
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+app.use("/api/beneficios", beneficiosRoutes);
 
 // 5. MANEJO DE ERRORES (Siempre al final de las rutas)
 app.use((err: any, req: any, res: any, next: any) => {

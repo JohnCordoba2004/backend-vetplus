@@ -29,9 +29,9 @@ const AfiliacionSchema = new Schema(
     cobertura: { type: String },
     valorMensual: { type: Number },
 
-    estado: { type: String, default: "pendiente" },
+    // estado: { type: String, default: "pendiente" },
   },
-  { timestamps: true },
+  // { timestamps: true },
 );
 
 export const Afiliacion = model("Afiliacion", AfiliacionSchema);

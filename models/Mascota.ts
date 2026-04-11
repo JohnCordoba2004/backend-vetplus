@@ -35,16 +35,13 @@ export const mascotaSchema = new Schema<IPlan>({
     type: Boolean,
     required: [true, "Debes indicar si es de raza o no"],
     default: false,
-    validate: {
-      validator: function (valor) {
-        return valor === true || valor === false;
-      },
-      message: "El valor debe ser verdadero o falso",
-    },
   },
   raza: {
     type: String,
     trim: true,
+    required: function(this: any){
+      return this.esDeRaza === true
+    }
   },
   edad: {
     type: String,

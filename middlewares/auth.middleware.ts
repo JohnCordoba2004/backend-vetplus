@@ -32,7 +32,7 @@ export const validarJWT = (req: any, res: Response, next: NextFunction) => {
 };
 
 export const validarAdmin = (req: any, res: Response, next: NextFunction) => {
-  if (req.usuario.role !== "admin") {
+  if (!req.usuario || req.usuario.role !== "admin") {
     return res.status(403).json({ error: "Acceso denegado, solo admin" });
   }
   next();

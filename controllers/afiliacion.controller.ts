@@ -51,10 +51,10 @@ export const crearAfiliacion = async (req: Request, res: Response) => {
         <p><b>Especie:</b> ${req.body.especie}</p>
         <p>
         <b>Es de raza?:</b> 
-        ${esDeRaza ? "Es de raza" : "No es de Raza"}
+        ${esDeRaza ? "Si" : "No"}
         </p>
         <p><b>Raza:</b> 
-        ${req.body.raza ? req.body.raza : "No es de raza" }
+        ${req.body.raza ? req.body.raza || "No especificada" : "No aplica"}
         </p>
         <p><b>Edad:</b> ${req.body.edad}</p>
 
