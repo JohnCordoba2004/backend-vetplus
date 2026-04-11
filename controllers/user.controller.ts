@@ -13,13 +13,14 @@ export const createUser = async (req: Request, res: Response) => {
     }
 
     // 2. Encriptar password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
+    console.log("PASSWORD QUE LLEGA AL BACK:", req.body.password);
     // 3. Crear usuario
     const user = await User.create({
       name,
       email,
-      password: hashedPassword,
+      password, //Envio la contraseña sin hashear
       role,
     });
 
@@ -45,7 +46,6 @@ export const getUsers = async (_req: Request, res: Response) => {
   }
 };
 
-
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -63,7 +63,6 @@ export const updateUser = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error actualizando usuario" });
   }
 };
-
 
 export const deleteUser = async (req: Request, res: Response) => {
   try {
