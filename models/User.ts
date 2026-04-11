@@ -1,17 +1,36 @@
-import { Document, Schema, model } from "mongoose";
-
-export interface IPlan extends Document {
+import bcrypt from "bcryptjs";
+import { Schema, model } from "mongoose";
+/* export interface IPlan extends Document {
   name: string;
   email: string;
   password: string;
   role: "admin" | "user";
-}
+} */
 
-const userSchema = new Schema<IPlan>({
+const userSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  role: { type: String, enum: ["admin", "user"], default: "user" },
+  refreshToken: { type: String, default: null, select: false },
+  role: {
+    type: String,
+    enum: ["admin", "user"],
+    default: "user",
+  },
 });
 
-export default model<IPlan>("User", userSchema);
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) {
+    return;
+  }
+
+  this.password = await bcrypt.hash(this.password, 10);
+});
+
+userSchema.methods.toJSON = function () {
+  const { __v, password, refreshToken, _id, ...usuario } = this.toObject();
+  usuario.uid = _id;
+  return usuario;
+};
+
+export default model("User", userSchema);

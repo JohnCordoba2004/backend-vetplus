@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
-import Usuario from "../models/Usuario";
+// import Usuario from "../models/Usuario";
+import User from "../models/User";
 
 type AuthTokenPayload = JwtPayload & {
   uid: string;
@@ -38,7 +39,7 @@ const isAuthTokenPayload = (
 
 const saveRefreshToken = async (uid: string, refreshToken: string) => {
   const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
-  await Usuario.findByIdAndUpdate(uid, { refreshToken: hashedRefreshToken });
+  await User.findByIdAndUpdate(uid, { refreshToken: hashedRefreshToken });
 };
 
 const validatePassword = async (
@@ -71,7 +72,7 @@ export const login = async (req: Request, res: Response) => {
         .json({ ok: false, msg: "Email y contraseña son obligatorios" });
     }
 
-    const usuarioDB = await Usuario.findOne({ email });
+    const usuarioDB = await User.findOne({ email });
     console.log("[login] usuario encontrado", { email, found: !!usuarioDB });
 
     if (!usuarioDB) {
@@ -95,7 +96,7 @@ export const login = async (req: Request, res: Response) => {
 
     if (!isHash) {
       const hashedPassword = await bcrypt.hash(password, 10);
-      await Usuario.findByIdAndUpdate(usuarioDB.id, {
+      await User.findByIdAndUpdate(usuarioDB.id, {
         password: hashedPassword,
       });
       console.log("[login] password migrada a hash", { email });
@@ -141,7 +142,7 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
         .json({ ok: false, msg: "Refresh token no valido" });
     }
 
-    const usuarioDB = await Usuario.findById(payload.uid).select(
+    const usuarioDB = await User.findById(payload.uid).select(
       "+refreshToken",
     );
 
