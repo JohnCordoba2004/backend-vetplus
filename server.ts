@@ -10,6 +10,7 @@ import helmet from "helmet";
 /* Rutas routes */
 // import plansRoutes from "./routes/plans.routes";
 import authRoutes from "./routes/auth.routes"; // Importa tus nuevas rutas de login
+import userRoutes from "./routes/user.routes";
 // import clinicaRoutes from "./routes/clinica.routes";
 // import profesionalesRoutes from "./routes/profesionales.routes";
 // import otrosRoutes from "./routes/otros.routes";
@@ -65,6 +66,7 @@ connectDB();
 
 // 4. RUTAS
 app.use("/api/auth", authRoutes); // La ruta para el login
+app.use("/api/users", userRoutes);
 app.use("/api/planes", plansRoutes);
 app.use("/api/clinicas", clinicaRoutes);
 app.use("/api/profesionales", profesionalesRoutes);
