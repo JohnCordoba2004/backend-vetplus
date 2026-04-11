@@ -80,6 +80,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     const storedPassword = String(usuarioDB.password ?? "");
+    console.log("PASSWORD DB:", storedPassword); // 👈 AQUÍ
     const isHash = BCRYPT_HASH_PATTERN.test(storedPassword);
     console.log("[login] tipo password almacenada", {
       email,
