@@ -1,11 +1,6 @@
 import bcrypt from "bcryptjs";
 import { Schema, model } from "mongoose";
-/* export interface IPlan extends Document {
-  name: string;
-  email: string;
-  password: string;
-  role: "admin" | "user";
-} */
+
 
 const userSchema = new Schema({
   name: { type: String, required: true },

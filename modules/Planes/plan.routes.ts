@@ -7,6 +7,7 @@ const router = Router();
 //GET
 router.get("/", controller.getAll);
 router.get("/:id", controller.getById);
+router.get("/tipo/:tipo", controller.obtenerPlanesPorTipo);
 
 // Protegidas
 //Post

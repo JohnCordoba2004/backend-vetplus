@@ -14,6 +14,21 @@ export const createMany = (data: any[]) => {
   return Plan.insertMany(data);
 };
 
+// Por tipo
+export const obtenerPlanesPorTipo = (tipo: string) => {
+  return Plan.find({ type: tipo });
+};
+
+/* export const crearPorTipo = async (tipo: any, data: any) => {
+  const existe = await Plan.findOne({ tipo });
+
+  if (existe) {
+    throw new Error("Ya existe un plan de este tipo");
+  }
+
+  return await Plan.create({ tipo, ...data });
+}; */
+
 // Actualizar
 export const update = (id: string, data: any) => {
   return Plan.findByIdAndUpdate(id, data, {

@@ -22,6 +22,17 @@ export const getById = async (req: Request, res: Response) => {
   }
 };
 
+// Obtener por tipo
+export const obtenerPlanesPorTipo = async (req: Request, res: Response) => {
+  try {
+    const { tipo } = req.params;
+    const planes = await service.obtenerPlanesPorTipo(tipo);
+    res.json(planes);
+  } catch (error) {
+    return res.status(500).json({ error: "Erro al obtener el plan por tipo" });
+  }
+};
+
 // Crear (uno o varios)
 export const create = async (res: Response, req: Request) => {
   try {
