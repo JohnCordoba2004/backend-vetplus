@@ -6,12 +6,13 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const crearAsesor = async (req: Request, res: Response) => {
   try {
-    const as = new Asesor(req.body);
-    await as.save();
-
     const valorInscripcion = 70000;
     const inscripcionMasCobertura = valorInscripcion + req.body.valorMensual;
 
+    const as = new Asesor(req.body);
+    await as.save();
+
+    const esDeRaza = !!req.body.raza;
 
     // Correo al asesor
     await resend.emails.send({
@@ -48,7 +49,7 @@ export const crearAsesor = async (req: Request, res: Response) => {
         <p><b>Especie:</b> ${req.body.especie}</p>
         <p>
         <b>Es de raza?:</b> 
-        ${req.body.esDeRaza ? "Si" : "No"}
+        ${esDeRaza ? "Si" : "No"}
         </p>
         <p><b>Raza:</b> 
         ${req.body.raza ? req.body.raza || "No especificada" : "No aplica"}
