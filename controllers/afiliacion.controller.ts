@@ -6,12 +6,14 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const crearAfiliacion = async (req: Request, res: Response) => {
   try {
+    const valorInscripcion = 70000;
+    const valorMensual = Number(req.body.valorMensual) || 0;
+    const inscripcionMasCobertura = valorInscripcion + valorMensual;
+
     const afiliacion = new Afiliacion(req.body);
     await afiliacion.save();
 
-    const valorInscripcion = 70000;
-    const inscripcionMasCobertura = valorInscripcion + req.body.valorMensual;
-
+    const esDeRaza = !!req.body.raza;
 
     //Correo al afiliarse
     await resend.emails.send({
@@ -50,7 +52,7 @@ export const crearAfiliacion = async (req: Request, res: Response) => {
         <p><b>Especie:</b> ${req.body.especie}</p>
         <p>
         <b>Es de raza?:</b> 
-        ${req.body.esDeRaza ? "Si" : "No"}
+        ${esDeRaza ? "Si" : "No"}
         </p>
         <p><b>Raza:</b> 
         ${req.body.raza ? req.body.raza || "No especificada" : "No aplica"}
@@ -71,7 +73,7 @@ export const crearAfiliacion = async (req: Request, res: Response) => {
 
         <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-top: 15px;">
           <p><b>Inscripción:</b> $${valorInscripcion.toLocaleString()}</p>
-          <p><b>Valor Mensual del paquete:</b> $${req.body.valorMensual.toLocaleString()}</p>
+          <p><b>Valor Mensual del paquete:</b> $${valorMensual.toLocaleString()}</p>
           <p style="font-size: 18px; color: #2563eb;">
             <b>Total:</b> $${inscripcionMasCobertura.toLocaleString()}
           </p>
@@ -96,7 +98,7 @@ export const crearAfiliacion = async (req: Request, res: Response) => {
 
     res.status(201).json({ ok: true, afiliacion });
   } catch (error) {
-    console.error(error);
+    console.error("Error en crearAfiliacion:", error);
     res.status(500).json({ ok: false, msg: "Error al guardar la afiliación" });
   }
 };
