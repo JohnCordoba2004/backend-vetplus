@@ -12,7 +12,6 @@ export const crearAsesor = async (req: Request, res: Response) => {
     const valorInscripcion = 70000;
     const inscripcionMasCobertura = valorInscripcion + req.body.valorMensual;
 
-    const esDeRaza = req.body.esDeRaza === true || req.body.esDeRaza === "true";
 
     // Correo al asesor
     await resend.emails.send({
@@ -49,7 +48,7 @@ export const crearAsesor = async (req: Request, res: Response) => {
         <p><b>Especie:</b> ${req.body.especie}</p>
         <p>
         <b>Es de raza?:</b> 
-        ${esDeRaza ? "Si" : "No"}
+        ${req.body.esDeRaza ? "Si" : "No"}
         </p>
         <p><b>Raza:</b> 
         ${req.body.raza ? req.body.raza || "No especificada" : "No aplica"}
