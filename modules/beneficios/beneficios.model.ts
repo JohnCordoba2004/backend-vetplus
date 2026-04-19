@@ -7,7 +7,7 @@ export interface IPlan extends Document {
   direction: String[];
   telefono: String[];
   web: String[];
-  desc: String;
+  desc: String[];
   contact: String[];
   img: String;
   imgFull: String;
