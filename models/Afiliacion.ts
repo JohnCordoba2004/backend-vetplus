@@ -14,7 +14,7 @@ const AfiliacionSchema = new Schema(
     email: { type: String, required: true },
 
     // Datos de la mascota (vienen del store de Pinia)
-    especie: { type: String },
+    especie: { type: String, required: true },
     nombreMascota: { type: String },
     raza: { type: String },
     edad: { type: String },
@@ -29,9 +29,16 @@ const AfiliacionSchema = new Schema(
     cobertura: { type: String },
     valorMensual: { type: Number },
 
+    /* Nuevo Campo */
+    modo: {
+      type: String,
+      enum: ["directa", "asesor"],
+      default: "directa",
+    },
+
     // estado: { type: String, default: "pendiente" },
   },
-  // { timestamps: true },
+  { timestamps: true },
 );
 
 export const Afiliacion = model("Afiliacion", AfiliacionSchema);

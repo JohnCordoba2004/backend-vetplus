@@ -1,8 +1,37 @@
 import { Request, Response } from "express";
 import { Afiliacion } from "../models/Afiliacion";
+import { Asesor } from "../models/Asesor"; // Asegúrate que la ruta sea correcta
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+/* Nueva funcion /stats */
+export const obtenerEstadisticasAfiliaciones = async (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    const [directa, asesor] = await Promise.all([
+      Afiliacion.countDocuments(),
+      Asesor.countDocuments(),
+    ]);
+
+    const total = directa + asesor;
+
+    res.json({
+      total,
+      directa,
+      asesor,
+      mensaje: "Estadísticas de afiliaciones actualizadas",
+    });
+  } catch (error) {
+    console.error("Error en obtenerEstadisticasAfiliaciones:", error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error al obtener las estadísticas de afiliaciones",
+    });
+  }
+};
 
 export const crearAfiliacion = async (req: Request, res: Response) => {
   try {
