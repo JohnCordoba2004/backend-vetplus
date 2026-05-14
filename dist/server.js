@@ -10,14 +10,22 @@ const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const database_1 = require("./database");
 const helmet_1 = __importDefault(require("helmet"));
+/* Rutas routes */
+// import plansRoutes from "./routes/plans.routes";
 const auth_routes_1 = __importDefault(require("./routes/auth.routes")); // Importa tus nuevas rutas de login
-const plans_routes_1 = __importDefault(require("./routes/plans.routes"));
-const clinica_routes_1 = __importDefault(require("./routes/clinica.routes"));
-const profesionales_routes_1 = __importDefault(require("./routes/profesionales.routes"));
-const otros_routes_1 = __importDefault(require("./routes/otros.routes"));
+const user_routes_1 = __importDefault(require("./routes/user.routes"));
+// import clinicaRoutes from "./routes/clinica.routes";
+// import profesionalesRoutes from "./routes/profesionales.routes";
+// import otrosRoutes from "./routes/otros.routes";
 const mascota_routes_1 = __importDefault(require("./routes/mascota.routes"));
 const afiliacion_routes_1 = __importDefault(require("./routes/afiliacion.routes"));
 const asesor_routes_1 = __importDefault(require("./routes/asesor.routes"));
+/* Rutas modules */
+const plan_routes_1 = __importDefault(require("./modules/Planes/plan.routes"));
+const beneficios_routes_1 = __importDefault(require("./modules/beneficios/beneficios.routes"));
+const clinica_routes_1 = __importDefault(require("./modules/Clinicas/clinica.routes"));
+const profesionales_routes_1 = __importDefault(require("./modules/Profesionales/profesionales.routes"));
+const otros_routes_1 = __importDefault(require("./modules/Otros/otros.routes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 // 1. CONFIGURACIÓN DE CORS (Debe ir antes de las rutas)
@@ -55,7 +63,8 @@ app.use((0, helmet_1.default)());
 (0, database_1.connectDB)();
 // 4. RUTAS
 app.use("/api/auth", auth_routes_1.default); // La ruta para el login
-app.use("/api/planes", plans_routes_1.default);
+app.use("/api/users", user_routes_1.default);
+app.use("/api/planes", plan_routes_1.default);
 app.use("/api/clinicas", clinica_routes_1.default);
 app.use("/api/profesionales", profesionales_routes_1.default);
 app.use("/api/otros", otros_routes_1.default);
@@ -63,6 +72,7 @@ app.use("/api/mascotas", mascota_routes_1.default);
 app.use("/api/afiliaciones", afiliacion_routes_1.default);
 app.use("/api/asesor", asesor_routes_1.default);
 app.use("/uploads", express_1.default.static(path_1.default.join(__dirname, "../uploads")));
+app.use("/api/beneficios", beneficios_routes_1.default);
 // 5. MANEJO DE ERRORES (Siempre al final de las rutas)
 app.use((err, req, res, next) => {
     console.error(err.stack);
