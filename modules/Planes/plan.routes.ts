@@ -17,6 +17,6 @@ router.put("/:id", [validarJWT, validarAdmin, controller.update]);
 // Opcional: Patch
 router.patch("/:id", [validarJWT, validarAdmin, controller.update]);
 //Delete
-router.patch("/:id", [validarJWT, validarAdmin, controller.remove]);
+router.delete("/:id", [validarJWT, validarAdmin, controller.remove]);
 
 export default router;

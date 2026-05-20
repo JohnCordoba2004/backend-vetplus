@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import * as service from "./plan.services";
+  import * as service from "./plan.services";
 
 // Obtener todos
 export const getAll = async (req: Request, res: Response) => {
@@ -34,7 +34,7 @@ export const obtenerPlanesPorTipo = async (req: Request, res: Response) => {
 };
 
 // Crear (uno o varios)
-export const create = async (res: Response, req: Request) => {
+export const create = async (req: Request, res: Response) => {
   try {
     const data = req.body;
 
@@ -83,7 +83,7 @@ export const update = async (req: Request, res: Response) => {
 };
 
 // Eliminar
-export const remove = async (res: Response, req: Request) => {
+export const remove = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const deleted = await service.remove(id);
@@ -92,8 +92,8 @@ export const remove = async (res: Response, req: Request) => {
     }
     res.json({
       ok: true,
-      mensaje: "Beneficio eliminado correctamente",
-      beneficio: deleted,
+      mensaje: "Plan eliminado correctamente",
+      plan: deleted,
     });
   } catch (error) {
     res.status(500).json({ error: "Error al eliminar el plan" });
