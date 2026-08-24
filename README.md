@@ -1,4 +1,4 @@
-## README — backend-vetplus (overview)
+## README — backend (overview)
 
 Este proyecto es un **backend Node.js + Express + TypeScript** que expone endpoints REST y persiste datos en **MongoDB** usando **Mongoose**.
 
